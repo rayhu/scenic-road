@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button } from 'react-native';
 import MapView, { Marker, Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { fetchLandmarks } from '../services/openaiService';
+import { fetchLandmarks } from '../services/anthropicService';
+//import { fetchLandmarks } from '../services/openaiService';
 
 const HomeScreen: React.FC = () => {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
