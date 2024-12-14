@@ -17,6 +17,7 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
   `;
 
   try {
+    console.log(OPENAI_API_KEY);
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {

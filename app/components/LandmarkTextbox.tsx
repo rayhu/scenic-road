@@ -15,6 +15,7 @@ interface LandmarkTextboxProps {
 const LandmarkTextbox: React.FC<LandmarkTextboxProps> = ({ landmarks }) => {
   return (
     <View style={styles.textbox}>
+      {/* <Text>{JSON.stringify(landmarks)}</Text> */}
       <ScrollView>
         {landmarks.map((landmark, index) => (
           <View key={index} style={styles.landmarkItem}>

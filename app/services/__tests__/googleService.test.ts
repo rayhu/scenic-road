@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { fetchGooglePlaces } from "../googleService";
+import { fetchLandmarks } from "../googleService";
 
 jest.mock("axios");
 
@@ -20,7 +20,7 @@ describe("fetchGooglePlaces", () => {
 
     axios.get.mockResolvedValue(mockData);
 
-    const places = await fetchGooglePlaces(48.8584, 2.2945);
+    const places = await fetchLandmarks(48.8584, 2.2945);
     expect(places).toEqual([
       {
         name: "Eiffel Tower",
@@ -34,7 +34,7 @@ describe("fetchGooglePlaces", () => {
   it("should handle errors", async () => {
     axios.get.mockRejectedValue(new Error("Network Error"));
 
-    const places = await fetchGooglePlaces(48.8584, 2.2945);
+    const places = await fetchLandmarks(48.8584, 2.2945);
     expect(places).toEqual([]);
   });
 });

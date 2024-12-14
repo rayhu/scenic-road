@@ -2,9 +2,8 @@ import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
 import { Button, StyleSheet, View } from "react-native";
 
-import LandmarkTextbox from "../components/LandmarkTextbox";
-//import { fetchLandmarks } from '../services/anthropicService';
-import { fetchLandmarks } from "../services/openaiService";
+// import { fetchLandmarks } from "../services/openaiService";
+import { fetchLandmarks } from "../services/googleService";
 import LandmarkListScreen from "./LandmarkListScreen";
 import LandMarkMapScreen from "./LandmarkMapScreen";
 
@@ -15,11 +14,12 @@ const HomeScreen: React.FC = () => {
   const [landmarks, setLandmarks] = useState<any[]>([]);
   const [isMapView, setIsMapView] = useState<boolean>(true);
 
-  const getLandmarks = async (location: Location.LocationObject) => {
+  const getLandmarks = async () => {
     if (!location) return;
     const latitude = location.coords.latitude;
     const longitude = location.coords.longitude;
     const landmarksList = await fetchLandmarks(latitude, longitude);
+    console.log("Recieved Landmarks: ", landmarksList);
     setLandmarks(landmarksList);
   };
 
@@ -35,18 +35,15 @@ const HomeScreen: React.FC = () => {
       setLocation(currentLocation);
     };
 
-    requestLocationPermission().then(() => {
-      if (location) {
-        getLandmarks(location);
-      }
-    });
-  }, [location]);
+    requestLocationPermission();
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
         <Button title="Map View" onPress={() => setIsMapView(true)} />
         <Button title="List View" onPress={() => setIsMapView(false)} />
+        <Button title="Fetch Landmarks" onPress={getLandmarks} />
       </View>
       <View style={styles.content}>
         {isMapView ? (
@@ -55,8 +52,6 @@ const HomeScreen: React.FC = () => {
           <LandmarkListScreen landmarks={landmarks} />
         )}
       </View>
-
-      <LandmarkTextbox landmarks={landmarks} />
     </View>
   );
 };
@@ -72,6 +67,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+  },
+  content: {
+    flex: 1, // Ensures the content area takes up available space
   },
 });
 

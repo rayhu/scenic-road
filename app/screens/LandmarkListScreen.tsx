@@ -1,34 +1,72 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-type MapScreenRouteProp = RouteProp<{ params: { landmarks: any[] } }, "params">;
+interface Landmark {
+  name: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+}
 
-const LandmarkListScreen: React.FC = () => {
-  const route = useRoute<MapScreenRouteProp>();
-  const { landmarks = [] } = route.params || {};
+interface LandmarkListScreenProps {
+  landmarks: Landmark[];
+}
 
+const LandmarkListScreen: React.FC<LandmarkListScreenProps> = ({
+  landmarks,
+}) => {
   const navigation = useNavigation();
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <View style={styles.container}>
       <FlatList
         data={landmarks}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <TouchableOpacity
+            style={styles.landmarkItem}
             onPress={() =>
               navigation.navigate("LandmarkDetail", { landmark: item })
             }
           >
-            <Text style={{ fontSize: 18 }}>
-              {item.name} - {item.distance}
-            </Text>
+            <Text style={styles.landmarkName}>{item.name}</Text>
+            <Text style={styles.landmarkDescription}>{item.description}</Text>
           </TouchableOpacity>
         )}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "white",
+  },
+  landmarkItem: {
+    marginBottom: 10,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: "gray",
+    borderWidth: 1,
+    backgroundColor: "#f9f9f9",
+  },
+  landmarkName: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  landmarkDescription: {
+    fontSize: 14,
+    color: "gray",
+  },
+});
 
 export default LandmarkListScreen;

@@ -1,6 +1,6 @@
 # Scenic Road
 
-Scenic Road is an application designed to audibly take you on a journey. 
+Scenic Road is an application designed to audibly take you on a journey.
 
 Combined with ChatGPT APIs, it finds nearby locations, pick content for you to listen and create an abstract for every story.
 
@@ -9,6 +9,7 @@ User can also interact with the AI bot to pickup favorite content to listen to.
 This project is based on the [**React Native**](https://reactnative.dev), using the cli tool [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 ## Developer Getting Started
+
 1. Install dependencies
 
    ```bash
@@ -19,7 +20,7 @@ This project is based on the [**React Native**](https://reactnative.dev), using 
 ![Android Build](https://github.com/rayhu/WikiListen/actions/workflows/android_build.yml/badge.svg?event=push)
 ![iOS Build](https://github.com/rayhu/WikiListen/actions/workflows/ios_build.yml/badge.svg?event=push)
 
->**Note**: Make sure you install the necessary software into your computer according to [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you install the necessary software into your computer according to [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 You need an openAi API token to talk to chatgpt.
 After you register with openAi and obtained your token,
@@ -121,20 +122,46 @@ The GitHub Actions workflow has been setup to run lint, type check and unit test
 
 ## Troubleshooting
 
+To open the developer menu in an Expo app, which allows you to access options like "Debug Remote JS," you can use the following methods depending on your device or emulator:
+
+### On a Physical Device
+
+Shake the Device: This will bring up the developer menu at the bottom of the screen.
+
+### On an Android Emulator
+
+Press Ctrl + M: This keyboard shortcut will open the developer menu.
+
+### On an iOS Simulator
+
+Press Cmd + D: This keyboard shortcut will open the developer menu.
+
+### Developer Menu Options
+
+Once the developer menu is open, you can select "Debug Remote JS" to open the JavaScript debugger in your default web browser, typically Chrome. This will allow you to use Chrome DevTools to debug your JavaScript code.
+
+### Additional Options in the Developer Menu
+
+Reload: Reload the app to see changes.
+Toggle Inspector: Open the React Native Inspector to examine UI elements.
+Toggle Performance Monitor: View performance metrics for your app.
+
+By using these methods, you can easily access the developer menu and utilize the debugging tools available in Expo. If you have any more questions or need further assistance, feel free to ask!
+
 If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
 
 ## TODO list
 
-* SearchBar in React-Native-Elements
+- SearchBar in React-Native-Elements
 
 The react-native-elements's latest stable version (3.4.3) has the SearchBar type broken.
 The default props are not respected.
-Upgraded to 4.0.0-rc.2 which solved this issue. 
+Upgraded to 4.0.0-rc.2 which solved this issue.
 Please upgrade to right version when it has an official release.
 
 <https://www.npmjs.com/package/react-native-elements?activeTab=versions>
 
-* React-Native-TTS doesn't have handle events well.
+- React-Native-TTS doesn't have handle events well.
 
 The design is to speak a full sentence, once it is done (received tts.finished event), the tts will speak the next sentence.
 If user requests stop, it will remove the event handler, so that the app will not be cut off.

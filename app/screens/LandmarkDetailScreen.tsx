@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Text, View } from "react-native";
 
 type LandmarkDetailScreenRouteProp = RouteProp<
-  { params: { landmark: { name: string } } },
+  { params: { landmark: { name: string; description: string } } },
   "params"
 >;
 
@@ -14,7 +14,7 @@ const LandmarkDetailScreen: React.FC = () => {
   return (
     <View style={{ flex: 1, padding: 16 }}>
       <Text style={{ fontSize: 24 }}>{landmark.name}</Text>
-      <Text style={{ marginVertical: 8 }}>Description of the landmark...</Text>
+      <Text style={{ marginVertical: 8 }}>{landmark.description}</Text>
       <Button
         title="Introduction"
         onPress={() => {

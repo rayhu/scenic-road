@@ -1,20 +1,28 @@
-import { RouteProp } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import React from "react";
 import { Text, View } from "react-native";
-//eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MapView, { Circle, Marker } from "react-native-maps";
 
-type MapScreenRouteProp = RouteProp<
-  { params: { landmarks: any[]; location: Location.LocationObject } },
-  "params"
->;
+import { RootStackParamList } from "../types";
 
-const MapScreen: React.FC = () => {
-  const route = useRoute<MapScreenRouteProp>();
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { landmarks = [], location } = route.params || {};
+interface Landmark {
+  name: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+}
+
+interface LandMarkMapScreenProps {
+  landmarks: Landmark[];
+  location: Location.LocationObject | null;
+}
+
+const LandMarkMapScreen: React.FC<LandMarkMapScreenProps> = ({
+  landmarks,
+  location,
+}) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
     <View style={{ flex: 1 }}>
@@ -39,7 +47,7 @@ const MapScreen: React.FC = () => {
             fillColor="rgba(0, 0, 255, 0.5)"
           />
         )}
-        {/* {landmarks.map((landmark, index) => (
+        {landmarks.map((landmark, index) => (
           <Marker
             key={index}
             coordinate={{
@@ -49,20 +57,12 @@ const MapScreen: React.FC = () => {
             title={landmark.name}
             description={landmark.description}
             pinColor="pink"
+            onPress={() => navigation.navigate("LandmarkDetail", { landmark })}
           />
-        ))} */}
+        ))}
       </MapView>
     </View>
   );
 };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   map: {
-//     flex: 1,
-//   },
-// });
-
-export default MapScreen;
+export default LandMarkMapScreen;
