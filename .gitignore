@@ -36,3 +36,8 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# Ignore everything in the bin directory
+/bin/*
+# Exclude the keep_folder from being ignored
+!/bin/keep_folder
