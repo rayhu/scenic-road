@@ -1,7 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-
-import {OPENAI_API_KEY} from '../../bin/env.js';
+import { OPENAI_API_KEY } from "../../bin/env.js";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
   const prompt = `List some famous landmarks near latitude ${latitude} and longitude ${longitude}.
@@ -18,52 +17,57 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
   `;
 
   try {
-    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-      model: 'text-davinci-003',
-      prompt: prompt,
-      max_tokens: 1000,
-      temperature: 20, // Lower temperature for more deterministic output
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-      stop: null,
-      stream: false,
-      logprobs: null,
-      echo: false,
-      response_format: { type: 'json_object' },
-      best_of: 1,
-      logit_bias: null,
-      user: null,
-      function_call: {
-        name: "landmark_list",
-        description: "A list of landmarks with their names, descriptions, and coordinates",
-        parameters: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              name: { type: "string" },
-              description: { type: "string" },
-              latitude: { type: "number" },
-              longitude: { type: "number" }
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "text-davinci-003",
+        prompt: prompt,
+        max_tokens: 1000,
+        temperature: 20, // Lower temperature for more deterministic output
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+        stop: null,
+        stream: false,
+        logprobs: null,
+        echo: false,
+        response_format: { type: "json_object" },
+        best_of: 1,
+        logit_bias: null,
+        user: null,
+        function_call: {
+          name: "landmark_list",
+          description:
+            "A list of landmarks with their names, descriptions, and coordinates",
+          parameters: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                name: { type: "string" },
+                description: { type: "string" },
+                latitude: { type: "number" },
+                longitude: { type: "number" },
+              },
+              required: ["name", "description", "latitude", "longitude"],
             },
-            required: ["name", "description", "latitude", "longitude"]
-          }
-        }
-      }
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          },
+        },
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+        },
+      },
+    );
 
     console.log(response.data);
 
     // const jsonResponse = JSON.parse(response.data.choices[0].text.trim());
     return response.data;
   } catch (error) {
-    console.error('Error fetching landmarks:', error);
+    console.error("Error fetching landmarks:", error);
     return [];
   }
 };

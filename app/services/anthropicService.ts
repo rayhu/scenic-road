@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Hypothetical API key stored securely
-import { ANTHROPIC_API_KEY } from '../../bin/env.js';
+import { ANTHROPIC_API_KEY } from "../../bin/env.js";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
   const prompt = `List some famous landmarks near latitude ${latitude} and longitude ${longitude}.
@@ -18,23 +18,27 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
   `;
 
   try {
-    const response = await axios.post('https://api.anthropic.com/v1/claude/completions', {
-      model: 'claude-v1',
-      prompt: prompt,
-      max_tokens: 1000,
-      temperature: 0.7, // Adjust temperature as needed
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ANTHROPIC_API_KEY}`,
+    const response = await axios.post(
+      "https://api.anthropic.com/v1/claude/completions",
+      {
+        model: "claude-v1",
+        prompt: prompt,
+        max_tokens: 1000,
+        temperature: 0.7, // Adjust temperature as needed
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${ANTHROPIC_API_KEY}`,
+        },
+      },
+    );
 
     // Assuming the response is in the expected format
     const jsonResponse = JSON.parse(response.data.choices[0].text.trim());
     return jsonResponse;
   } catch (error) {
-    console.error('Error fetching landmarks:', error);
+    console.error("Error fetching landmarks:", error);
     return [];
   }
-}; 
+};

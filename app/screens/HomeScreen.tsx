@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button } from 'react-native';
-import MapView, { Marker, Circle } from 'react-native-maps';
-import * as Location from 'expo-location';
-import { fetchLandmarks } from '../services/anthropicService';
-//import { fetchLandmarks } from '../services/openaiService';
-import LandmarkTextbox from '../components/LandmarkTextbox';
+import * as Location from "expo-location";
+import React, { useEffect, useState } from "react";
+import { Button, StyleSheet, View } from "react-native";
+
+import LandmarkTextbox from "../components/LandmarkTextbox";
+//import { fetchLandmarks } from '../services/anthropicService';
+import { fetchLandmarks } from "../services/openaiService";
+import LandmarkListScreen from "./LandmarkListScreen";
+import LandMarkMapScreen from "./LandmarkMapScreen";
 
 const HomeScreen: React.FC = () => {
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null,
+  );
   const [landmarks, setLandmarks] = useState<any[]>([]);
+  const [isMapView, setIsMapView] = useState<boolean>(true);
 
   const getLandmarks = async (location: Location.LocationObject) => {
     if (!location) return;
@@ -21,8 +26,8 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
     const requestLocationPermission = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Permission to access location was denied');
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
         return;
       }
 
@@ -38,45 +43,36 @@ const HomeScreen: React.FC = () => {
   }, [location]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <Text style={{ fontSize: 24, textAlign: 'center' }}>Scenic Road</Text>
-      <MapView
-        style={{ flex: 1 }}
-        region={{
-          latitude: location?.coords.latitude || 37.78825,
-          longitude: location?.coords.longitude || -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      >
-        {location && (
-          <Circle
-            center={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            radius={350}
-            strokeColor="rgba(0, 0, 255, 0.8)"
-            fillColor="rgba(0, 0, 255, 0.5)"
-          />
+    <View style={styles.container}>
+      <View style={styles.topBar}>
+        <Button title="Map View" onPress={() => setIsMapView(true)} />
+        <Button title="List View" onPress={() => setIsMapView(false)} />
+      </View>
+      <View style={styles.content}>
+        {isMapView ? (
+          <LandMarkMapScreen landmarks={landmarks} location={location} />
+        ) : (
+          <LandmarkListScreen landmarks={landmarks} />
         )}
-        {/* {landmarks.map((landmark, index) => (
-          <Marker
-            key={index}
-            coordinate={{
-              latitude: landmark.latitude,
-              longitude: landmark.longitude,
-            }}
-            title={landmark.name}
-            description={landmark.description}
-            pinColor="pink"
-          />
-        ))} */}
-      </MapView>
+      </View>
+
       <LandmarkTextbox landmarks={landmarks} />
-      <Button title="Refresh Location" onPress={() => { /* Refresh logic */ }} />
     </View>
   );
 };
 
-export default HomeScreen; 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  topBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 10,
+    backgroundColor: "#f8f8f8",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+});
+
+export default HomeScreen;

@@ -1,19 +1,17 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import * as Location from "expo-location";
+import React from "react";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
-interface Landmark {
-  id: string;
-  name: string;
-  distance: string;
-}
-
-const landmarks: Landmark[] = [
-  { id: '1', name: 'Landmark A', distance: '2 km' },
-  { id: '2', name: 'Landmark B', distance: '5 km' },
-];
+type MapScreenRouteProp = RouteProp<
+  { params: { landmarks: any[]; location: Location.LocationObject } },
+  "params"
+>;
 
 const LandmarkListScreen: React.FC = () => {
+  const route = useRoute<MapScreenRouteProp>();
+  const { landmarks } = route.params;
+
   const navigation = useNavigation();
 
   return (
@@ -22,8 +20,14 @@ const LandmarkListScreen: React.FC = () => {
         data={landmarks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('LandmarkDetail', { landmark: item })}>
-            <Text style={{ fontSize: 18 }}>{item.name} - {item.distance}</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("LandmarkDetail", { landmark: item })
+            }
+          >
+            <Text style={{ fontSize: 18 }}>
+              {item.name} - {item.distance}
+            </Text>
           </TouchableOpacity>
         )}
       />

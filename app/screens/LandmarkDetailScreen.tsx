@@ -1,8 +1,11 @@
-import React from 'react';
-import { View, Text, Button } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from "@react-navigation/native";
+import React from "react";
+import { Button, Text, View } from "react-native";
 
-type LandmarkDetailScreenRouteProp = RouteProp<{ params: { landmark: { name: string } } }, 'params'>;
+type LandmarkDetailScreenRouteProp = RouteProp<
+  { params: { landmark: { name: string } } },
+  "params"
+>;
 
 const LandmarkDetailScreen: React.FC = () => {
   const route = useRoute<LandmarkDetailScreenRouteProp>();
@@ -12,8 +15,18 @@ const LandmarkDetailScreen: React.FC = () => {
     <View style={{ flex: 1, padding: 16 }}>
       <Text style={{ fontSize: 24 }}>{landmark.name}</Text>
       <Text style={{ marginVertical: 8 }}>Description of the landmark...</Text>
-      <Button title="Introduction" onPress={() => { /* Call OpenAI API and TTS */ }} />
-      <Button title="Navigate" onPress={() => { /* Open navigation app */ }} />
+      <Button
+        title="Introduction"
+        onPress={() => {
+          /* Call OpenAI API and TTS */
+        }}
+      />
+      <Button
+        title="Navigate"
+        onPress={() => {
+          /* Open navigation app */
+        }}
+      />
     </View>
   );
 };

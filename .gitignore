@@ -41,3 +41,5 @@ app-example
 /bin/*
 # Exclude the keep_folder from being ignored
 !/bin/keep_folder
+
+.vscode/
