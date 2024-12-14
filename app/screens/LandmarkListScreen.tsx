@@ -1,16 +1,12 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import * as Location from "expo-location";
 import React from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
-type MapScreenRouteProp = RouteProp<
-  { params: { landmarks: any[]; location: Location.LocationObject } },
-  "params"
->;
+type MapScreenRouteProp = RouteProp<{ params: { landmarks: any[] } }, "params">;
 
 const LandmarkListScreen: React.FC = () => {
   const route = useRoute<MapScreenRouteProp>();
-  const { landmarks } = route.params;
+  const { landmarks = [] } = route.params || {};
 
   const navigation = useNavigation();
 

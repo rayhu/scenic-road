@@ -14,7 +14,7 @@ type MapScreenRouteProp = RouteProp<
 const MapScreen: React.FC = () => {
   const route = useRoute<MapScreenRouteProp>();
   //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { landmarks, location } = route.params;
+  const { landmarks = [], location } = route.params || {};
 
   return (
     <View style={{ flex: 1 }}>
