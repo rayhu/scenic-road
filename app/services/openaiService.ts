@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import * as SecureStore from 'expo-secure-store';
 
 import {OPENAI_API_KEY} from '../../bin/env.js';
 
@@ -59,8 +58,10 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
       },
     });
 
-    const jsonResponse = JSON.parse(response.data.choices[0].text.trim());
-    return jsonResponse;
+    console.log(response.data);
+
+    // const jsonResponse = JSON.parse(response.data.choices[0].text.trim());
+    return response.data;
   } catch (error) {
     console.error('Error fetching landmarks:', error);
     return [];

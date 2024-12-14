@@ -4,6 +4,7 @@ import MapView, { Marker, Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { fetchLandmarks } from '../services/anthropicService';
 //import { fetchLandmarks } from '../services/openaiService';
+import LandmarkTextbox from '../components/LandmarkTextbox';
 
 const HomeScreen: React.FC = () => {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -54,12 +55,12 @@ const HomeScreen: React.FC = () => {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             }}
-            radius={50}
-            strokeColor="rgba(0, 0, 255, 0.5)"
-            fillColor="rgba(0, 0, 255, 0.3)"
+            radius={350}
+            strokeColor="rgba(0, 0, 255, 0.8)"
+            fillColor="rgba(0, 0, 255, 0.5)"
           />
         )}
-        {landmarks.map((landmark, index) => (
+        {/* {landmarks.map((landmark, index) => (
           <Marker
             key={index}
             coordinate={{
@@ -70,8 +71,9 @@ const HomeScreen: React.FC = () => {
             description={landmark.description}
             pinColor="pink"
           />
-        ))}
+        ))} */}
       </MapView>
+      <LandmarkTextbox landmarks={landmarks} />
       <Button title="Refresh Location" onPress={() => { /* Refresh logic */ }} />
     </View>
   );
