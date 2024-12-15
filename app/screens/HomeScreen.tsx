@@ -19,7 +19,6 @@ const HomeScreen: React.FC = () => {
     const latitude = location.coords.latitude;
     const longitude = location.coords.longitude;
     const landmarksList = await fetchLandmarks(latitude, longitude);
-    console.log("Recieved Landmarks: ", landmarksList);
     setLandmarks(landmarksList);
   };
 

@@ -1,9 +1,10 @@
 import axios from "axios";
 
-// Hypothetical API key stored securely
-import { ANTHROPIC_API_KEY } from "../../bin/env.js";
+import { getApiKey } from "./apiKeyService";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
+  const ANTHROPIC_API_KEY = await getApiKey("ANTHROPIC_API_KEY");
+
   const prompt = `List some famous landmarks near latitude ${latitude} and longitude ${longitude}.
   The landmarks should be in the format of a list of strings, each representing a landmark.
   Please provide the response in the following JSON format:

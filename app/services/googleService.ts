@@ -1,9 +1,9 @@
 import axios from "axios";
 
-// Import your Google API key from the environment variables
-import { GOOGLE_API_KEY } from "../../bin/env.js";
+import { getApiKey } from "./apiKeyService";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
+  const GOOGLE_API_KEY = await getApiKey("GOOGLE_API_KEY");
   const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=5000&type=landmark&key=${GOOGLE_API_KEY}`;
 
   try {

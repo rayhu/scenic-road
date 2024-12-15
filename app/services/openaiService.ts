@@ -1,8 +1,10 @@
 import axios from "axios";
 
-import { OPENAI_API_KEY } from "../../bin/env.js";
+import { getApiKey } from "./apiKeyService";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
+  const OPENAI_API_KEY = await getApiKey("OPENAI_API_KEY");
+
   const prompt = `List some famous landmarks near latitude ${latitude} and longitude ${longitude}.
   The landmarks should be in the format of a list of strings, each representing a landmark.
   Please provide the response in the following JSON format:
@@ -17,7 +19,6 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
   `;
 
   try {
-    console.log(OPENAI_API_KEY);
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -63,10 +64,9 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
       },
     );
 
-    console.log(response.data);
+    const jsonResponse = JSON.parse(response.data.choices[0].text.trim()); // Parse the JSON string
 
-    // const jsonResponse = JSON.parse(response.data.choices[0].text.trim());
-    return response.data;
+    return jsonResponse;
   } catch (error) {
     console.error("Error fetching landmarks:", error);
     return [];
