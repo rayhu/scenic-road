@@ -6,39 +6,46 @@ import { config } from "../config/config";
 const ONE_WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
 const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000; // One month in milliseconds
 
-export const fetchAndStoreApiKeys = async () => {
+export const fetchAndStoreApiKeys = async (serviceName: string) => {
   try {
-    const response = await axios.get(config.SERVER_URL, {
-      auth: {
-        username: "admin", // Use your server's credentials
-        password: "secret",
+    const url = `${config.SERVER_URL}/get-service-secret/${serviceName}`;
+    console.log("Fetching API key from url:", url);
+    const response = await axios.get(url, {
+      headers: {
+        "x-api-key": config.SERVER_API_KEY || "default_secret_key", // Use env variable or fallback
       },
     });
 
-    const { OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY, invalidate } =
-      response.data;
+    const { service_secret, valid } = response.data;
 
     // Check if the server response indicates key invalidation
-    if (invalidate) {
-      await SecureStore.deleteItemAsync("OPENAI_API_KEY");
-      await SecureStore.deleteItemAsync("ANTHROPIC_API_KEY");
-      await SecureStore.deleteItemAsync("GOOGLE_API_KEY");
-      console.log("Keys invalidated by server response.");
+    if (!valid) {
+      await SecureStore.deleteItemAsync(serviceName);
+      console.log(`Key for ${serviceName} invalidated by server response.`);
       return;
     }
 
-    // Store keys securely
-    await SecureStore.setItemAsync("OPENAI_API_KEY", OPENAI_API_KEY);
-    await SecureStore.setItemAsync("ANTHROPIC_API_KEY", ANTHROPIC_API_KEY);
-    await SecureStore.setItemAsync("GOOGLE_API_KEY", GOOGLE_API_KEY);
+    // Store the service secret securely
+    await SecureStore.setItemAsync(serviceName, service_secret);
 
     // Store the current time as the last update time
     const currentTime = new Date().toISOString();
     await SecureStore.setItemAsync("API_KEYS_LAST_UPDATE", currentTime);
 
-    return { OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY };
-  } catch (error) {
-    console.error("Error fetching API keys:", error);
+    return service_secret;
+  } catch (error: any) {
+    if (error.response) {
+      // Handle specific HTTP errors
+      if (error.response.status === 403) {
+        console.error("Invalid API Key");
+      } else if (error.response.status === 404) {
+        console.error("Service not found");
+      } else {
+        console.error("Error fetching service secret:", error.response.data);
+      }
+    } else {
+      console.error("Error fetching service secret:", error.message);
+    }
     throw error;
   }
 };
@@ -54,27 +61,25 @@ export const getApiKey = async (keyName: string) => {
       if (currentTime - lastUpdateTime > ONE_MONTH_IN_MS) {
         console.warn("Stored key is older than a month, it is now expired.");
         // Remove expired keys from the store
-        await SecureStore.deleteItemAsync("OPENAI_API_KEY");
-        await SecureStore.deleteItemAsync("ANTHROPIC_API_KEY");
-        await SecureStore.deleteItemAsync("GOOGLE_API_KEY");
+        await SecureStore.deleteItemAsync(keyName);
         throw new Error("API key expired");
       } else if (currentTime - lastUpdateTime > ONE_WEEK_IN_MS) {
         console.warn(
           "Stored key is older than a week, attempting to fetch new keys.",
         );
-        await fetchAndStoreApiKeys();
+        await fetchAndStoreApiKeys(keyName);
       }
     }
 
     // Attempt to fetch new keys if the server is reachable
     try {
-      await fetchAndStoreApiKeys();
-    } catch (error) {
+      await fetchAndStoreApiKeys(keyName);
+    } catch (error: any) {
       console.warn("Server not reachable, using stored key if available.");
     }
 
     return await SecureStore.getItemAsync(keyName);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error retrieving API key:", error);
     throw error;
   }

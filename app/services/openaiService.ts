@@ -3,7 +3,7 @@ import axios from "axios";
 import { getApiKey } from "./apiKeyService";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
-  const OPENAI_API_KEY = await getApiKey("OPENAI_API_KEY");
+  const OPENAI_API_KEY = await getApiKey("openai");
 
   const prompt = `List some famous landmarks near latitude ${latitude} and longitude ${longitude}.
   The landmarks should be in the format of a list of strings, each representing a landmark.
