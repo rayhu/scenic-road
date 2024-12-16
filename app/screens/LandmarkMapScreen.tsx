@@ -4,6 +4,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import MapView, { Circle, Marker } from "react-native-maps";
 
+import { playTextToSpeech } from "../services/textToSpeechService";
 import { RootStackParamList } from "../types";
 
 interface Landmark {
@@ -23,6 +24,15 @@ const LandMarkMapScreen: React.FC<LandMarkMapScreenProps> = ({
   location,
 }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handleMarkerLongPress = (landmark: Landmark) => {
+    navigation.navigate("LandmarkDetail", { landmark });
+  };
+
+  const handleMarkerPress = (landmark: Landmark) => {
+    console.log(`Playing audio for ${landmark.name}`);
+    playTextToSpeech(landmark.name + " is located at " + landmark.description);
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -57,7 +67,9 @@ const LandMarkMapScreen: React.FC<LandMarkMapScreenProps> = ({
             title={landmark.name}
             description={landmark.description}
             pinColor="pink"
-            onPress={() => navigation.navigate("LandmarkDetail", { landmark })}
+            onPress={() => handleMarkerPress(landmark)}
+            onCalloutPress={() => handleMarkerPress(landmark)}
+            onLongPress={() => handleMarkerLongPress(landmark)}
           />
         ))}
       </MapView>
