@@ -1,5 +1,13 @@
 import React, { useEffect } from "react";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import CountdownTimer from "./CountdownTimer";
 
 interface NotificationProps {
   message: string;
@@ -17,21 +25,20 @@ const Notification: React.FC<NotificationProps> = ({ message, onDismiss }) => {
       useNativeDriver: true,
     }).start();
 
-    // Dismiss the notification after 5 seconds
-    const timer = setTimeout(() => {
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(() => onDismiss());
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [onDismiss, opacity]);
+    return () => {
+      // Ensure any cleanup if needed
+    };
+  }, [opacity]);
 
   return (
     <Animated.View style={[styles.container, { opacity }]}>
-      <Text style={styles.message}>{message}</Text>
+      <View style={styles.content}>
+        <Text style={styles.message}>{message}</Text>
+        <CountdownTimer initialCount={5} onComplete={onDismiss} />
+        <TouchableOpacity onPress={onDismiss} style={styles.dismissButton}>
+          <Text style={styles.dismissText}>X</Text>
+        </TouchableOpacity>
+      </View>
     </Animated.View>
   );
 };
@@ -46,9 +53,22 @@ const styles = StyleSheet.create({
     padding: 10,
     zIndex: 1000,
   },
+  content: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   message: {
     color: "white",
     textAlign: "center",
+    flex: 1,
+  },
+  dismissButton: {
+    padding: 5,
+  },
+  dismissText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 
