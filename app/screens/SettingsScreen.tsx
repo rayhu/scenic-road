@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import {
   getSelectedProvider,
@@ -27,7 +27,7 @@ const SettingsScreen: React.FC = () => {
         style={styles.backButton}
         onPress={() => navigation.goBack()}
       >
-        <Icon name="ios-arrow-back" size={30} color="black" />
+        <Ionicons name="arrow-back" size={30} color="black" />
       </TouchableOpacity>
       <Text style={styles.title}>Select AI Provider</Text>
       <Button

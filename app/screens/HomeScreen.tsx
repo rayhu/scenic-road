@@ -2,7 +2,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import React, { useState } from "react";
 import { Button, StyleSheet, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import Notification from "../components/Notification";
 import { getSelectedProvider } from "../config/providerConfig";
@@ -28,8 +28,6 @@ const HomeScreen: React.FC = () => {
         await getSelectedProvider(setSelectedProvider);
       };
 
-      fetchProvider();
-
       const requestLocationPermission = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
@@ -41,7 +39,9 @@ const HomeScreen: React.FC = () => {
         setLocation(currentLocation);
       };
 
-      requestLocationPermission();
+      requestLocationPermission()
+        .then(() => fetchProvider())
+        .then(() => getLandmarks());
     }, []),
   );
 
@@ -86,9 +86,9 @@ const HomeScreen: React.FC = () => {
       <View style={styles.topBar}>
         <Button title="Map View" onPress={() => setIsMapView(true)} />
         <Button title="List View" onPress={() => setIsMapView(false)} />
-        <Button title="Fetch Landmarks" onPress={getLandmarks} />
+        <Button title="Refresh" onPress={getLandmarks} />
         <TouchableOpacity style={styles.gearButton} onPress={goToSettings}>
-          <Icon name="ios-settings" size={30} color="black" />
+          <Ionicons name="settings" size={30} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
+    padding: 5,
     backgroundColor: "#f8f8f8",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
@@ -118,8 +118,7 @@ const styles = StyleSheet.create({
     flex: 1, // Ensures the content area takes up available space
   },
   gearButton: {
-    position: "absolute",
-    top: 40,
+    top: 5,
     right: 20,
   },
 });
