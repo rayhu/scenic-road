@@ -9,7 +9,7 @@ const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000; // One month in milliseconds
 export const fetchAndStoreApiKeys = async (serviceName: string) => {
   try {
     const url = `${config.SERVER_URL}/get-service-secret/${serviceName}`;
-    console.log("Fetching API key from url:", url);
+    // console.log("Fetching API key from url:", url);
     const response = await axios.get(url, {
       headers: {
         "x-api-key": config.SERVER_API_KEY || "default_secret_key", // Use env variable or fallback

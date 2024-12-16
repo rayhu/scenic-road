@@ -13,19 +13,17 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
   const [count, setCount] = useState(initialCount);
 
   useEffect(() => {
+    if (count <= 0) {
+      onComplete();
+      return;
+    }
+
     const interval = setInterval(() => {
-      setCount((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          onComplete();
-          return 0;
-        }
-        return prev - 1;
-      });
+      setCount((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [onComplete]);
+  }, [count, onComplete]);
 
   return <Text style={{ color: "white" }}> (Dismissing in {count})</Text>;
 };

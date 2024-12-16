@@ -7,14 +7,22 @@ import {
   getSelectedProvider,
   handleProviderChange,
 } from "../config/providerConfig";
+import { PROVIDERS } from "../config/providers";
 
 const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [selectedProvider, setSelectedProvider] = useState<string>("OpenAI");
+  const [selectedProvider, setSelectedProvider] = useState<string>(
+    PROVIDERS.OPENAI,
+  );
 
   useEffect(() => {
-    // Retrieve the selected provider when the component mounts
-    getSelectedProvider(setSelectedProvider);
+    const fetchProvider = async () => {
+      // Retrieve the selected provider when the component mounts
+      const provider = await getSelectedProvider(PROVIDERS.GOOGLE);
+      setSelectedProvider(provider);
+    };
+
+    fetchProvider(); // Call the async function
   }, []);
 
   const changeProvider = (provider: string) => {
@@ -31,19 +39,19 @@ const SettingsScreen: React.FC = () => {
       </TouchableOpacity>
       <Text style={styles.title}>Select AI Provider</Text>
       <Button
-        title="OpenAI"
-        onPress={() => changeProvider("OpenAI")}
-        color={selectedProvider === "OpenAI" ? "blue" : "gray"}
+        title={PROVIDERS.OPENAI}
+        onPress={() => changeProvider(PROVIDERS.OPENAI)}
+        color={selectedProvider === PROVIDERS.OPENAI ? "blue" : "gray"}
       />
       <Button
-        title="Anthropic"
-        onPress={() => changeProvider("Anthropic")}
-        color={selectedProvider === "Anthropic" ? "blue" : "gray"}
+        title={PROVIDERS.ANTHROPIC}
+        onPress={() => changeProvider(PROVIDERS.ANTHROPIC)}
+        color={selectedProvider === PROVIDERS.ANTHROPIC ? "blue" : "gray"}
       />
       <Button
-        title="Google"
-        onPress={() => changeProvider("Google")}
-        color={selectedProvider === "Google" ? "blue" : "gray"}
+        title={PROVIDERS.GOOGLE}
+        onPress={() => changeProvider(PROVIDERS.GOOGLE)}
+        color={selectedProvider === PROVIDERS.GOOGLE ? "blue" : "gray"}
       />
     </View>
   );
