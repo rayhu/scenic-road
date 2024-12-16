@@ -75,7 +75,10 @@ export const getApiKey = async (keyName: string) => {
     try {
       await fetchAndStoreApiKeys(keyName);
     } catch (error: any) {
-      console.warn("Server not reachable, using stored key if available.");
+      console.warn(
+        "Server not reachable, using stored key if available.",
+        error,
+      );
     }
 
     return await SecureStore.getItemAsync(keyName);

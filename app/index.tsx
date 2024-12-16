@@ -3,6 +3,7 @@ import React from "react";
 
 import HomeScreen from "./screens/HomeScreen";
 import LandmarkDetailScreen from "./screens/LandmarkDetailScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           title: "Landmark Details",
         }}
       />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 };

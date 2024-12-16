@@ -3,15 +3,17 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "src",
+    "types",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "app/services/__tests__/openaiService.test.ts.old"  ]
+    "expo-env.d.ts",
+    "types/react-native-vector-icons.d.ts",
+    "app/services/__tests__/openaiService.test.ts.old"
+  ]
 }
