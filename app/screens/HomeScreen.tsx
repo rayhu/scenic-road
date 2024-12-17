@@ -6,8 +6,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 import Notification from "../components/Notification";
 import { getSelectedProvider } from "../config/providerConfig";
-import { PROVIDERS } from "../config/providers";
+import { DEFAULT_PROVIDER } from "../config/providers";
 import { getLandmarks } from "../services/landmarkService";
+import { playTextToSpeech } from "../services/textToSpeechService";
 import { areLocationsAlmostSame } from "../utils/locationUtils";
 import LandmarkListScreen from "./LandmarkListScreen";
 import LandMarkMapScreen from "./LandmarkMapScreen";
@@ -30,17 +31,17 @@ const HomeScreen: React.FC = () => {
     location: null,
   });
   const [isMapView, setIsMapView] = useState<boolean>(true);
-  const [selectedProvider, setSelectedProvider] = useState<string>(
-    PROVIDERS.GOOGLE,
-  );
+  const [selectedProvider, setSelectedProvider] =
+    useState<string>(DEFAULT_PROVIDER);
   const [notification, setNotification] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const navigation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
         const fetchProvider = async (): Promise<string> => {
-          const provider = await getSelectedProvider(PROVIDERS.GOOGLE);
+          const provider = await getSelectedProvider(DEFAULT_PROVIDER);
           setSelectedProvider(provider);
           return provider;
         };
@@ -101,6 +102,33 @@ const HomeScreen: React.FC = () => {
     navigation.navigate("Settings");
   };
 
+  const handlePlayPress = async () => {
+    if (isPlaying) {
+      setIsPlaying(false);
+    } else {
+      try {
+        setIsPlaying(true);
+        for (let i = 0; i < landmarksData.landmarks.length; i++) {
+          const landmark = landmarksData.landmarks[i];
+          if (landmarksData.landmarks.length == 1) {
+            await playTextToSpeech("Nearby Landmark: ");
+          } else if (i === 0) {
+            await playTextToSpeech("First landmark: ");
+          } else {
+            await playTextToSpeech("Next landmark: ");
+          }
+          await playTextToSpeech(landmark.name);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await playTextToSpeech(landmark.description);
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+        setIsPlaying(false);
+      } catch (error) {
+        console.error("Error playing landmark description:", error);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       {notification && (
@@ -130,6 +158,13 @@ const HomeScreen: React.FC = () => {
           <LandmarkListScreen landmarks={landmarksData.landmarks} />
         )}
       </View>
+      <TouchableOpacity style={styles.playButton} onPress={handlePlayPress}>
+        <Ionicons
+          name={isPlaying ? "pause-circle" : "play-circle"}
+          size={60}
+          color="black"
+        />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -152,6 +187,20 @@ const styles = StyleSheet.create({
   gearButton: {
     top: 5,
     right: 20,
+  },
+  playButton: {
+    position: "absolute",
+    bottom: 1,
+    alignSelf: "center",
+    zIndex: 0, // Ensure the button is on top
+    backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent white background
+    borderRadius: 30, // Rounded corners
+    padding: 10, // Padding around the icon
+    elevation: 5, // Add shadow for Android
+    shadowColor: "#000", // Shadow color for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS
+    shadowOpacity: 0.3, // Shadow opacity for iOS
+    shadowRadius: 3.84, // Shadow radius for iOS
   },
 });
 

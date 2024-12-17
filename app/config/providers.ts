@@ -4,4 +4,5 @@ export const PROVIDERS = {
   GOOGLE: "Google",
 };
 
+export const DEFAULT_PROVIDER = PROVIDERS.OPENAI;
 export type ProviderType = keyof typeof PROVIDERS;

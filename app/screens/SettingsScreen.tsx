@@ -7,18 +7,17 @@ import {
   getSelectedProvider,
   handleProviderChange,
 } from "../config/providerConfig";
-import { PROVIDERS } from "../config/providers";
+import { DEFAULT_PROVIDER, PROVIDERS } from "../config/providers";
 
 const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [selectedProvider, setSelectedProvider] = useState<string>(
-    PROVIDERS.OPENAI,
-  );
+  const [selectedProvider, setSelectedProvider] =
+    useState<string>(DEFAULT_PROVIDER);
 
   useEffect(() => {
     const fetchProvider = async () => {
       // Retrieve the selected provider when the component mounts
-      const provider = await getSelectedProvider(PROVIDERS.GOOGLE);
+      const provider = await getSelectedProvider(DEFAULT_PROVIDER);
       setSelectedProvider(provider);
     };
 

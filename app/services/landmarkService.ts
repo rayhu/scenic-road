@@ -17,9 +17,9 @@ export const getLandmarks = async (
   location: LocationObject | null,
 ): Promise<{ landmarksData: LandmarksData; notification: string }> => {
   // console.log(
-  //     `Fetching landmarks for provider: ${selectedProvider} for location: ${JSON.stringify(
-  //         location, null, 2
-  //     )}`,
+  //   `Fetching landmarks for provider: ${selectedProvider} for location: ${JSON.stringify(
+  //     location, null, 2
+  //   )}`,
   // );
   if (!location) {
     return {
