@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Animated,
   StyleSheet,
@@ -15,7 +15,7 @@ interface NotificationProps {
 }
 
 const Notification: React.FC<NotificationProps> = ({ message, onDismiss }) => {
-  const opacity = new Animated.Value(0);
+  const opacity = useMemo(() => new Animated.Value(0), []);
 
   useEffect(() => {
     // Fade in the notification

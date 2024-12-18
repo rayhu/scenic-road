@@ -14,8 +14,6 @@ import log from "../utils/logger";
 import LandmarkListScreen from "./LandmarkListScreen";
 import LandMarkMapScreen from "./LandmarkMapScreen";
 
-// Import the logger
-
 interface LandmarksData {
   lastRetrieved: Date | null;
   landmarks: any[];
@@ -42,7 +40,6 @@ const HomeScreen: React.FC = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      log.info("HomeScreen is focused");
       const fetchData = async () => {
         const fetchProvider = async (): Promise<string> => {
           const provider = await getSelectedProvider(DEFAULT_PROVIDER);
@@ -53,18 +50,18 @@ const HomeScreen: React.FC = () => {
           async (): Promise<Location.LocationObject | null> => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== "granted") {
-              console.log("Permission to access location was denied");
+              log.info("Permission to access location was denied");
               return null;
             }
 
             let currentLocation = await Location.getCurrentPositionAsync({});
-            // console.log("Fetched location:", currentLocation);
+            log.info("Fetched location:", currentLocation);
             return currentLocation;
           };
         try {
           const currentLocation = await requestLocationPermission();
           if (!currentLocation) {
-            console.log("Location permission not granted");
+            log.info("Location permission not granted");
             return;
           }
           setLocation(currentLocation);
@@ -74,17 +71,16 @@ const HomeScreen: React.FC = () => {
             landmarksData.location,
             currentLocation,
           );
-          console.log("providerChanged", providerChanged);
-          console.log("new provider", selectedProvider);
-          console.log("old provider", landmarksData.provider);
-          console.log("locationChanged", locationChanged);
-          console.log(
-            "previousLocation",
-            JSON.stringify(landmarksData.location, null, 2),
+          log.info("providerChanged", providerChanged);
+          log.debug(
+            `new provider: ${selectedProvider}, old provider: ${landmarksData.provider}`,
           );
-          console.log(
-            "currentLocation",
-            JSON.stringify(currentLocation, null, 2),
+          log.info("locationChanged", locationChanged);
+          log.debug(
+            `previousLocation: ${JSON.stringify(landmarksData.location, null, 2)}`,
+          );
+          log.debug(
+            `currentLocation: ${JSON.stringify(currentLocation, null, 2)}`,
           );
           if (providerChanged || locationChanged) {
             return getLandmarks(selectedProvider, currentLocation).then(
@@ -95,11 +91,11 @@ const HomeScreen: React.FC = () => {
             );
           }
         } catch (error) {
-          console.error("Error fetching data", error);
+          log.error("Error fetching data", error);
         }
       };
       fetchData();
-    }, []),
+    }, [landmarksData.location, landmarksData.provider, selectedProvider]),
   );
 
   const goToSettings = () => {
@@ -114,7 +110,7 @@ const HomeScreen: React.FC = () => {
         setIsPlaying(true);
         for (let i = 0; i < landmarksData.landmarks.length; i++) {
           const landmark = landmarksData.landmarks[i];
-          if (landmarksData.landmarks.length == 1) {
+          if (landmarksData.landmarks.length === 1) {
             await playTextToSpeech("Nearby Landmark: ");
           } else if (i === 0) {
             await playTextToSpeech("First landmark: ");
@@ -128,14 +124,9 @@ const HomeScreen: React.FC = () => {
         }
         setIsPlaying(false);
       } catch (error) {
-        console.error("Error playing landmark description:", error);
+        log.error("Error playing landmark description:", error);
       }
     }
-  };
-
-  const handleButtonPress = () => {
-    log.debug("Button pressed on HomeScreen");
-    // ... existing code ...
   };
 
   return (
@@ -151,7 +142,18 @@ const HomeScreen: React.FC = () => {
         <Button title="List View" onPress={() => setIsMapView(false)} />
         <Button
           title="Refresh"
-          onPress={() => getLandmarks(selectedProvider, location)}
+          onPress={async () => {
+            try {
+              const { landmarksData, notification } = await getLandmarks(
+                selectedProvider,
+                location,
+              );
+              setLandmarksData(landmarksData);
+              setNotification(notification);
+            } catch (error) {
+              log.error("Error refreshing landmarks:", error);
+            }
+          }}
         />
         <TouchableOpacity style={styles.gearButton} onPress={goToSettings}>
           <Ionicons name="settings" size={30} color="black" />

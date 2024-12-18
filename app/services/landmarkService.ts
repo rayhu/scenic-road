@@ -1,9 +1,5 @@
 import { LocationObject } from "expo-location";
 
-// Import the logger
-import { config } from "../config/config";
-// Import the config
-
 import { PROVIDERS } from "../config/providers";
 import { fetchLandmarks as fetchAnthropicLandmarks } from "../services/anthropicService";
 import { fetchLandmarks as fetchGoogleLandmarks } from "../services/googleService";

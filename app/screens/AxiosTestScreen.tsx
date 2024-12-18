@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
+import log from "../utils/logger";
+
 const AxiosTestScreen: React.FC = () => {
   const [data, setData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -11,12 +13,12 @@ const AxiosTestScreen: React.FC = () => {
       const response = await axios.get(
         "https://jsonplaceholder.typicode.com/posts/1",
       );
-      console.log("AxiosTest successful: ", response.data);
+      log.info("AxiosTest successful: ", response.data);
       setData(response.data.title);
       setError(null);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      console.error(err);
+      log.error(err);
       setError("Failed to fetch data");
       setData(null);
     }

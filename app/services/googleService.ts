@@ -1,10 +1,6 @@
 import axios from "axios";
 
-// Import the logger
-import { config } from "../config/config";
 import log from "../utils/logger";
-// Import the config
-
 import { getApiKey } from "./apiKeyService";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {

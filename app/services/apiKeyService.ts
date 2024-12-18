@@ -12,7 +12,7 @@ const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000; // One month in milliseconds
 export const fetchAndStoreApiKeys = async (serviceName: string) => {
   try {
     const url = `${config.SERVER_URL}/get-service-secret/${serviceName}`;
-    // console.log("Fetching API key from url:", url);
+    log.info("Fetching API key from url:", url);
     const response = await axios.get(url, {
       headers: {
         "x-api-key": config.SERVER_API_KEY || "default_secret_key", // Use env variable or fallback
@@ -24,7 +24,7 @@ export const fetchAndStoreApiKeys = async (serviceName: string) => {
     // Check if the server response indicates key invalidation
     if (!valid) {
       await SecureStore.deleteItemAsync(serviceName);
-      console.log(`Key for ${serviceName} invalidated by server response.`);
+      log.info(`Key for ${serviceName} invalidated by server response.`);
       return;
     }
 
@@ -61,12 +61,12 @@ export const getApiKey = async (keyName: string) => {
     if (lastUpdate) {
       const lastUpdateTime = new Date(lastUpdate).getTime();
       if (currentTime - lastUpdateTime > ONE_MONTH_IN_MS) {
-        console.warn("Stored key is older than a month, it is now expired.");
+        log.warn("Stored key is older than a month, it is now expired.");
         // Remove expired keys from the store
         await SecureStore.deleteItemAsync(keyName);
         throw new Error("API key expired");
       } else if (currentTime - lastUpdateTime > ONE_WEEK_IN_MS) {
-        console.warn(
+        log.warn(
           "Stored key is older than a week, attempting to fetch new keys.",
         );
         await fetchAndStoreApiKeys(keyName);
@@ -77,15 +77,12 @@ export const getApiKey = async (keyName: string) => {
     try {
       await fetchAndStoreApiKeys(keyName);
     } catch (error: any) {
-      console.warn(
-        "Server not reachable, using stored key if available.",
-        error,
-      );
+      log.warn("Server not reachable, using stored key if available.", error);
     }
 
     return await SecureStore.getItemAsync(keyName);
   } catch (error: any) {
-    console.error("Error retrieving API key:", error);
+    log.error("Error retrieving API key:", error);
     throw error;
   }
 };

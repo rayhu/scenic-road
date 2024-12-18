@@ -2,6 +2,7 @@ import axios from "axios";
 import { Audio } from "expo-av";
 import * as Speech from "expo-speech";
 
+import log from "../utils/logger";
 // Import Speech from expo-speech
 import { getApiKey } from "./apiKeyService";
 
@@ -30,22 +31,19 @@ export const openAITextToSpeech = async (
     );
 
     // Log the response headers and data for debugging
-    console.log("Response Headers:", response.headers);
-    console.log("Response Data:", response.data);
+    log.debug("Response Headers:", response.headers);
+    log.debug("Response Data:", response.data);
 
     // Check if the response is a valid blob
     if (response.data && response.headers["content-type"].includes("audio")) {
       await playAudioBlob(response.data);
       return response.data; // This should be the audio blob
     } else {
-      console.error("Unexpected response format:", response.data);
+      log.error("Unexpected response format:", response.data);
       return null;
     }
   } catch (error) {
-    console.error(
-      "Error fetching speech:",
-      error.response?.data || error.message,
-    );
+    log.error("Error fetching speech:", error.response?.data || error.message);
     return null;
   }
 };
@@ -59,7 +57,7 @@ const playAudioBlob = async (audioBlob: Blob) => {
     });
     await soundObject.playAsync();
   } catch (error) {
-    console.error("Error playing audio blob:", error);
+    log.error("Error playing audio blob:", error);
   }
 };
 
@@ -69,7 +67,7 @@ const playAudioBlob = async (audioBlob: Blob) => {
  */
 export const playTextToSpeech = (text: string) => {
   if (!text) {
-    console.warn("No text provided for TTS");
+    log.warn("No text provided for TTS");
     return;
   }
 
@@ -77,8 +75,8 @@ export const playTextToSpeech = (text: string) => {
     language: "en", // Specify the language code if needed
     pitch: 1.0, // Adjust the pitch of the voice
     rate: 1.0, // Adjust the rate of speech
-    onDone: () => console.log("Speech finished"),
-    onError: (error) => console.error("Speech error:", error),
+    onDone: () => log.info("Speech finished"),
+    onError: (error) => log.error("Speech error:", error),
   });
 };
 

@@ -8,8 +8,6 @@ import { playTextToSpeech } from "../services/textToSpeechService";
 import { RootStackParamList } from "../types";
 import log from "../utils/logger";
 
-// Import the logger
-
 interface Landmark {
   name: string;
   description: string;
@@ -40,7 +38,7 @@ const LandMarkMapScreen: React.FC<LandMarkMapScreenProps> = ({
   };
 
   const handleMarkerPress = (landmark: Landmark) => {
-    console.log(`Playing audio for ${landmark.name}`);
+    log.info(`Playing audio for ${landmark.name}`);
     playTextToSpeech(landmark.name + " is located at " + landmark.description);
   };
 
