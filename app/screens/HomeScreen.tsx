@@ -140,8 +140,7 @@ const HomeScreen: React.FC = () => {
       <View style={styles.topBar}>
         <Button title="Map View" onPress={() => setIsMapView(true)} />
         <Button title="List View" onPress={() => setIsMapView(false)} />
-        <Button
-          title="Refresh"
+        <TouchableOpacity
           onPress={async () => {
             try {
               const { landmarksData, notification } = await getLandmarks(
@@ -154,7 +153,10 @@ const HomeScreen: React.FC = () => {
               log.error("Error refreshing landmarks:", error);
             }
           }}
-        />
+          style={styles.refreshButton}
+        >
+          <Ionicons name="refresh" size={24} color="black" />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.gearButton} onPress={goToSettings}>
           <Ionicons name="settings" size={30} color="black" />
         </TouchableOpacity>
@@ -192,8 +194,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
+  refreshButton: {
+    padding: 10,
+  },
   content: {
-    flex: 1, // Ensures the content area takes up available space
+    flex: 1,
   },
   gearButton: {
     top: 5,
@@ -203,15 +208,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 1,
     alignSelf: "center",
-    zIndex: 0, // Ensure the button is on top
-    backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent white background
-    borderRadius: 30, // Rounded corners
-    padding: 10, // Padding around the icon
-    elevation: 5, // Add shadow for Android
-    shadowColor: "#000", // Shadow color for iOS
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS
-    shadowOpacity: 0.3, // Shadow opacity for iOS
-    shadowRadius: 3.84, // Shadow radius for iOS
+    zIndex: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderRadius: 30,
+    padding: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3.84,
   },
 });
 
