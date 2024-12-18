@@ -10,8 +10,11 @@ import { DEFAULT_PROVIDER } from "../config/providers";
 import { getLandmarks } from "../services/landmarkService";
 import { playTextToSpeech } from "../services/textToSpeechService";
 import { areLocationsAlmostSame } from "../utils/locationUtils";
+import log from "../utils/logger";
 import LandmarkListScreen from "./LandmarkListScreen";
 import LandMarkMapScreen from "./LandmarkMapScreen";
+
+// Import the logger
 
 interface LandmarksData {
   lastRetrieved: Date | null;
@@ -39,6 +42,7 @@ const HomeScreen: React.FC = () => {
 
   useFocusEffect(
     React.useCallback(() => {
+      log.info("HomeScreen is focused");
       const fetchData = async () => {
         const fetchProvider = async (): Promise<string> => {
           const provider = await getSelectedProvider(DEFAULT_PROVIDER);
@@ -127,6 +131,11 @@ const HomeScreen: React.FC = () => {
         console.error("Error playing landmark description:", error);
       }
     }
+  };
+
+  const handleButtonPress = () => {
+    log.debug("Button pressed on HomeScreen");
+    // ... existing code ...
   };
 
   return (

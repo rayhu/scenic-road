@@ -1,5 +1,10 @@
 import axios from "axios";
 
+// Import the logger
+import { config } from "../config/config";
+import log from "../utils/logger";
+// Import the config
+
 import { getApiKey } from "./apiKeyService";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
@@ -39,7 +44,7 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
     const jsonResponse = JSON.parse(response.data.choices[0].text.trim());
     return jsonResponse;
   } catch (error) {
-    console.error("Error fetching landmarks:", error);
+    log.error("Error fetching landmarks:", error);
     return [];
   }
 };

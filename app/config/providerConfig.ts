@@ -1,6 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { PROVIDERS } from "./providers";
+import log from "../utils/logger";
+
+// Import the logger
+
+// import { PROVIDERS } from "./providers";
 
 export const handleProviderChange = async (
   provider: string,
@@ -9,8 +13,9 @@ export const handleProviderChange = async (
   setSelectedProvider(provider);
   try {
     await AsyncStorage.setItem("selectedProvider", provider);
+    log.debug(`Provider changed to ${provider}`);
   } catch (error) {
-    console.error("Error saving provider:", error);
+    log.error("Error saving provider:", error);
   }
 };
 
@@ -19,9 +24,13 @@ export const getSelectedProvider = async (
 ): Promise<string> => {
   try {
     const provider = await AsyncStorage.getItem("selectedProvider");
+    log.debug(`getSelectedProvider: ${provider}`);
+    if (!provider) {
+      log.debug(`No provider found, using default: ${defaultProvider}`);
+    }
     return provider || defaultProvider;
   } catch (error) {
-    console.error("Error retrieving provider:", error);
+    log.error("Error retrieving provider:", error);
     return defaultProvider;
   }
 };

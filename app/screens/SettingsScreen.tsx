@@ -8,6 +8,9 @@ import {
   handleProviderChange,
 } from "../config/providerConfig";
 import { DEFAULT_PROVIDER, PROVIDERS } from "../config/providers";
+import log from "../utils/logger";
+
+// Import the logger
 
 const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -25,6 +28,7 @@ const SettingsScreen: React.FC = () => {
   }, []);
 
   const changeProvider = (provider: string) => {
+    log.debug(`Changing provider to ${provider}`);
     handleProviderChange(provider, setSelectedProvider);
   };
 

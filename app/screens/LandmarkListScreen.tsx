@@ -8,6 +8,10 @@ import {
   View,
 } from "react-native";
 
+import log from "../utils/logger";
+
+// Import the logger
+
 interface Landmark {
   name: string;
   description: string;
@@ -24,6 +28,13 @@ const LandmarkListScreen: React.FC<LandmarkListScreenProps> = ({
 }) => {
   const navigation = useNavigation();
 
+  React.useEffect(() => {
+    log.info("LandmarkListScreen mounted");
+    return () => {
+      log.info("LandmarkListScreen unmounted");
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -32,9 +43,10 @@ const LandmarkListScreen: React.FC<LandmarkListScreenProps> = ({
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.landmarkItem}
-            onPress={() =>
-              navigation.navigate("LandmarkDetail", { landmark: item })
-            }
+            onPress={() => {
+              log.debug(`Navigating to details of ${item.name}`);
+              navigation.navigate("LandmarkDetail", { landmark: item });
+            }}
           >
             <Text style={styles.landmarkName}>{item.name}</Text>
             <Text style={styles.landmarkDescription}>{item.description}</Text>

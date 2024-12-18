@@ -2,6 +2,9 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 import { config } from "../config/config";
+import log from "../utils/logger";
+
+// Import the logger
 
 const ONE_WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
 const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000; // One month in milliseconds
@@ -35,16 +38,15 @@ export const fetchAndStoreApiKeys = async (serviceName: string) => {
     return service_secret;
   } catch (error: any) {
     if (error.response) {
-      // Handle specific HTTP errors
       if (error.response.status === 403) {
-        console.error("Invalid API Key");
+        log.error("Invalid API Key");
       } else if (error.response.status === 404) {
-        console.error("Service not found");
+        log.error("Service not found");
       } else {
-        console.error("Error fetching service secret:", error.response.data);
+        log.error("Error fetching service secret:", error.response.data);
       }
     } else {
-      console.error("Error fetching service secret:", error.message);
+      log.error("Error fetching service secret:", error.message);
     }
     throw error;
   }

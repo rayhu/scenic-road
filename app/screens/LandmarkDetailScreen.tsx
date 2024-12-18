@@ -3,6 +3,10 @@ import React from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
+import log from "../utils/logger";
+
+// Import the logger
+
 type LandmarkDetailScreenRouteProp = RouteProp<
   { params: { landmark: { name: string; description: string } } },
   "params"
@@ -13,11 +17,18 @@ const LandmarkDetailScreen: React.FC = () => {
   const { landmark } = route.params;
   const navigation = useNavigation();
 
+  React.useEffect(() => {
+    log.info(`Viewing details for ${landmark.name}`);
+  }, [landmark]);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          log.debug("Navigating back from LandmarkDetailScreen");
+          navigation.goBack();
+        }}
       >
         <Ionicons name="arrow-back" size={30} color="black" />
       </TouchableOpacity>
@@ -26,13 +37,15 @@ const LandmarkDetailScreen: React.FC = () => {
       <Button
         title="Introduction"
         onPress={() => {
-          /* Call OpenAI API and TTS */
+          log.debug("Introduction button pressed");
+          // Call OpenAI API and TTS
         }}
       />
       <Button
         title="Navigate"
         onPress={() => {
-          /* Open navigation app */
+          log.debug("Navigate button pressed");
+          // Open navigation app
         }}
       />
     </View>

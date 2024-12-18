@@ -6,6 +6,9 @@ import MapView, { Circle, Marker } from "react-native-maps";
 
 import { playTextToSpeech } from "../services/textToSpeechService";
 import { RootStackParamList } from "../types";
+import log from "../utils/logger";
+
+// Import the logger
 
 interface Landmark {
   name: string;
@@ -24,6 +27,13 @@ const LandMarkMapScreen: React.FC<LandMarkMapScreenProps> = ({
   location,
 }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  React.useEffect(() => {
+    log.info("LandmarkMapScreen mounted");
+    return () => {
+      log.info("LandmarkMapScreen unmounted");
+    };
+  }, []);
 
   const handleMarkerLongPress = (landmark: Landmark) => {
     navigation.navigate("LandmarkDetail", { landmark });

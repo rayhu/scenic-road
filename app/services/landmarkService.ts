@@ -1,9 +1,14 @@
 import { LocationObject } from "expo-location";
 
+// Import the logger
+import { config } from "../config/config";
+// Import the config
+
 import { PROVIDERS } from "../config/providers";
 import { fetchLandmarks as fetchAnthropicLandmarks } from "../services/anthropicService";
 import { fetchLandmarks as fetchGoogleLandmarks } from "../services/googleService";
 import { fetchLandmarks as fetchOpenAILandmarks } from "../services/openaiService";
+import log from "../utils/logger";
 
 interface LandmarksData {
   lastRetrieved: Date | null;
@@ -16,12 +21,15 @@ export const getLandmarks = async (
   selectedProvider: string,
   location: LocationObject | null,
 ): Promise<{ landmarksData: LandmarksData; notification: string }> => {
-  // console.log(
-  //   `Fetching landmarks for provider: ${selectedProvider} for location: ${JSON.stringify(
-  //     location, null, 2
-  //   )}`,
-  // );
+  log.debug(
+    `Fetching landmarks for provider: ${selectedProvider} for location: ${JSON.stringify(
+      location,
+      null,
+      2,
+    )}`,
+  );
   if (!location) {
+    log.warn("Location is not available.");
     return {
       landmarksData: {
         lastRetrieved: null,
@@ -48,7 +56,7 @@ export const getLandmarks = async (
       landmarksList = await fetchGoogleLandmarks(latitude, longitude);
       break;
     default:
-      console.warn("Unknown provider");
+      log.warn("Unknown provider");
   }
 
   const landmarksData = {
@@ -58,7 +66,9 @@ export const getLandmarks = async (
     location: location,
   };
 
-  const notification = `Retrieved ${landmarksList.length} landmarks using ${selectedProvider}`;
-
-  return { landmarksData, notification };
+  log.info("Landmarks fetched successfully.");
+  return {
+    landmarksData,
+    notification: "Landmarks fetched successfully.",
+  };
 };

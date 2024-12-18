@@ -1,6 +1,8 @@
 import axios from "axios";
+import { Audio } from "expo-av";
 import * as Speech from "expo-speech";
 
+// Import Speech from expo-speech
 import { getApiKey } from "./apiKeyService";
 
 const OPENAI_TTS_API_URL = "https://api.openai.com/v1/audio/speech"; // Hypothetical endpoint
@@ -15,7 +17,7 @@ export const openAITextToSpeech = async (
       {
         model: "tts-1",
         input: text,
-        voice: "default", // Specify voice if needed
+        voice: "alloy", // Specify voice if needed
         format: "mp3", // Specify audio format
       },
       {
@@ -23,7 +25,7 @@ export const openAITextToSpeech = async (
           Authorization: `Bearer ${OPENAI_API_KEY}`,
           "Content-Type": "application/json",
         },
-        responseType: "arraybuffer", // Ensure the response is treated as a binary blob
+        responseType: "blob", // Ensure the response is treated as a binary blob
       },
     );
 
@@ -33,6 +35,7 @@ export const openAITextToSpeech = async (
 
     // Check if the response is a valid blob
     if (response.data && response.headers["content-type"].includes("audio")) {
+      await playAudioBlob(response.data);
       return response.data; // This should be the audio blob
     } else {
       console.error("Unexpected response format:", response.data);
@@ -47,18 +50,18 @@ export const openAITextToSpeech = async (
   }
 };
 
-// Example usage
-(async () => {
-  const text = "Hello, this is a test of the OpenAI TTS service.";
-  const audioBlob = await openAITextToSpeech(text);
-
-  if (audioBlob) {
-    // Handle the audio blob, e.g., play it or save it
-    console.log("Audio received successfully.");
-  } else {
-    console.log("Failed to receive audio.");
+const playAudioBlob = async (audioBlob: Blob) => {
+  try {
+    const arrayBuffer = await audioBlob.arrayBuffer();
+    const soundObject = new Audio.Sound();
+    await soundObject.loadAsync({
+      uri: URL.createObjectURL(new Blob([arrayBuffer])),
+    });
+    await soundObject.playAsync();
+  } catch (error) {
+    console.error("Error playing audio blob:", error);
   }
-})();
+};
 
 /**
  * Plays the audio of the given text using text-to-speech.

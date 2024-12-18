@@ -1,5 +1,8 @@
 import axios from "axios";
 
+import log from "../utils/logger";
+// Import the logger
+
 // Replace with the actual API endpoint
 import { getApiKey } from "./apiKeyService";
 
@@ -29,7 +32,7 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
         model: "gpt-4o",
         max_tokens: 512,
         // "stream": false,
-        temperature: 20, // Lower temperature for more deterministic output
+        // temperature: 20, // Lower temperature for more deterministic output
         response_format: {
           type: "json_object",
         },
@@ -70,10 +73,10 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
         },
       },
     );
-    // console.log("API Response:", JSON.stringify(response.data, null, 2));
+    log.debug("API Response:", JSON.stringify(response.data, null, 2));
     const jsonResponse = response.data.choices[0].message.content;
     const cleanedJsonResponse = jsonResponse.replace(/```json|```/g, "").trim();
-    console.log(cleanedJsonResponse);
+    log.debug(cleanedJsonResponse);
     // Parse the JSON string
     const parsedResponse = JSON.parse(cleanedJsonResponse.trim());
 
@@ -84,7 +87,7 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
 
     return landmarks;
   } catch (error) {
-    console.error("Error fetching landmarks:", error);
+    log.error("Error fetching landmarks:", error);
     return [];
   }
 };

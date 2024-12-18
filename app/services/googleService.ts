@@ -1,5 +1,10 @@
 import axios from "axios";
 
+// Import the logger
+import { config } from "../config/config";
+import log from "../utils/logger";
+// Import the config
+
 import { getApiKey } from "./apiKeyService";
 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
@@ -16,7 +21,7 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
     }));
     return places;
   } catch (error) {
-    console.error("Error fetching places from Google:", error);
+    log.error("Error fetching places from Google:", error);
     return [];
   }
 };
