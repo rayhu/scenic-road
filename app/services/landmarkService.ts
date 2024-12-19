@@ -3,12 +3,23 @@ import { LocationObject } from "expo-location";
 import { PROVIDERS } from "../config/providers";
 import { fetchLandmarks as fetchAnthropicLandmarks } from "../services/anthropicService";
 import { fetchLandmarks as fetchGoogleLandmarks } from "../services/googleService";
-import { fetchLandmarks as fetchOpenAILandmarks } from "../services/openaiService";
+import {
+  fetchLandmarks as fetchOpenAILandmarks,
+  fetchStory,
+} from "../services/openaiService";
 import log from "../utils/logger";
+
+interface Landmark {
+  name: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+  story?: string;
+}
 
 interface LandmarksData {
   lastRetrieved: Date | null;
-  landmarks: any[];
+  landmarks: Landmark[];
   provider: string;
   location: LocationObject | null;
 }
@@ -40,7 +51,7 @@ export const getLandmarks = async (
   const latitude = location.coords.latitude;
   const longitude = location.coords.longitude;
 
-  let landmarksList = [];
+  let landmarksList: Landmark[] = [];
   switch (selectedProvider) {
     case PROVIDERS.OPENAI:
       landmarksList = await fetchOpenAILandmarks(latitude, longitude);
@@ -55,6 +66,16 @@ export const getLandmarks = async (
       log.warn("Unknown provider");
   }
 
+  // Fetch stories for each landmark
+  for (let landmark of landmarksList) {
+    try {
+      const story = await fetchStory(landmark.name, latitude, longitude);
+      landmark.story = story;
+    } catch (error) {
+      log.error(`Error fetching story for ${landmark.name}:`, error);
+    }
+  }
+
   const landmarksData = {
     lastRetrieved: new Date(),
     landmarks: landmarksList,
@@ -62,9 +83,9 @@ export const getLandmarks = async (
     location: location,
   };
 
-  log.info("Landmarks fetched successfully.");
+  log.info("Landmarks and stories fetched successfully.");
   return {
     landmarksData,
-    notification: "Landmarks fetched successfully.",
+    notification: "Landmarks and stories fetched successfully.",
   };
 };

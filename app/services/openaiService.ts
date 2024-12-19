@@ -11,9 +11,10 @@ const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"; // Replace 
 export const fetchLandmarks = async (latitude: number, longitude: number) => {
   const OPENAI_API_KEY = await getApiKey("openai");
 
-  const prompt = `List some famous landmarks near latitude ${latitude} and longitude ${longitude}.
+  const prompt = `List five famous landmarks near latitude ${latitude} and longitude ${longitude}.
   The landmarks should be in the format of a list of strings, each representing a landmark. 
-  The landmark description should be a funny interesting description of the landmark, with history and interesting facts.
+  The landmark description should be a funny interesting description of the landmark, 
+  with history and interesting facts. Make it about 100 words long.
   Please provide the response in the following JSON format:
     [
       {
@@ -30,7 +31,7 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
       OPENAI_API_URL,
       {
         model: "gpt-4o",
-        max_tokens: 512,
+        max_tokens: 4096,
         // "stream": false,
         // temperature: 20, // Lower temperature for more deterministic output
         response_format: {
@@ -86,6 +87,54 @@ export const fetchLandmarks = async (latitude: number, longitude: number) => {
       : [parsedResponse];
 
     return landmarks;
+  } catch (error) {
+    log.error("Error fetching landmarks:", error);
+    return [];
+  }
+};
+
+export const fetchStory = async (
+  name: string,
+  latitude: number,
+  longitude: number,
+) => {
+  const OPENAI_API_KEY = await getApiKey("openai");
+
+  const prompt = `Write a 3000 words story from the point of interest ${name} 
+  near the ${latitude} and ${longitude}. Start from the history of the place.
+  Then add interesting facts and possible attractions to visitors. Make it about 1500 words long.
+  `;
+
+  try {
+    const response = await axios.post(
+      OPENAI_API_URL,
+      {
+        model: "gpt-4o",
+        max_tokens: 2000,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a knowledgeable and helpful assistant called ChatGPT.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+        },
+      },
+    );
+    log.debug("API Response:", JSON.stringify(response.data, null, 2));
+    const jsonResponse = response.data.choices[0].message.content;
+    const cleanedJsonResponse = jsonResponse.replace(/```json|```/g, "").trim();
+    log.debug(cleanedJsonResponse);
+    return cleanedJsonResponse;
   } catch (error) {
     log.error("Error fetching landmarks:", error);
     return [];

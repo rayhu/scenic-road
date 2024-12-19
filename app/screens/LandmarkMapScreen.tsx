@@ -13,6 +13,7 @@ interface Landmark {
   description: string;
   latitude: number;
   longitude: number;
+  story?: string;
 }
 
 interface LandMarkMapScreenProps {
@@ -37,9 +38,16 @@ const LandMarkMapScreen: React.FC<LandMarkMapScreenProps> = ({
     navigation.navigate("LandmarkDetail", { landmark });
   };
 
-  const handleMarkerPress = (landmark: Landmark) => {
+  const handleMarkerPress = async (landmark: Landmark) => {
     log.info(`Playing audio for ${landmark.name}`);
-    playTextToSpeech(landmark.name + " is located at " + landmark.description);
+    if (landmark.story) {
+      await playTextToSpeech(`The story of ${landmark.name}`);
+      await playTextToSpeech(landmark.story);
+    } else {
+      await playTextToSpeech(
+        `There is no story for ${landmark.name} yet, would you like to write one?`,
+      );
+    }
   };
 
   return (
