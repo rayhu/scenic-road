@@ -1,4 +1,7 @@
-npm test
-npm run lint
+node scripts/check-node-modules.js
+npx expo-doctor
+npx expo install --check
 npm run format
+npm run lint
+npm test
 git update-index --again

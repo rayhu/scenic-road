@@ -7,24 +7,28 @@ The Scenic Road app is designed to provide users with an interactive experience 
 ## Core Requirements
 
 1. **Location Services**
+
    - On app launch, check if location permissions are granted.
    - If not granted, request location permissions from the user.
    - Once permissions are granted, obtain the user's current location.
 
 2. **Map Display**
+
    - Display a map centered on the user's current location.
    - Use a mapping library (e.g., Google Maps, Mapbox) to render the map.
 
 3. **Landmark Retrieval**
+
    - Call the OpenAI API to retrieve a list of landmarks around the user's coordinates.
    - Display these landmarks as markers on the map.
 
 4. **Landmark List View**
+
    - Provide a list view of the landmarks with their respective distances from the user's location.
 
 5. **Landmark Interaction**
    - Tapping on a landmark marker should present two options:
-     1. **Introduction**: 
+     1. **Introduction**:
         - Call the OpenAI API to generate a short introduction about the landmark.
         - Use TTS to read the introduction aloud to the user.
      2. **Navigation**:
@@ -33,18 +37,22 @@ The Scenic Road app is designed to provide users with an interactive experience 
 ## Additional Requirements
 
 1. **User Interface**
+
    - Design a user-friendly interface that is intuitive and easy to navigate.
    - Ensure the app is responsive and works well on various screen sizes.
 
 2. **Error Handling**
+
    - Implement error handling for API calls and location services.
    - Provide user feedback in case of errors (e.g., unable to retrieve location or landmarks).
 
 3. **Performance**
+
    - Optimize the app for performance to ensure smooth operation.
    - Minimize API calls and manage resources efficiently.
 
 4. **Security**
+
    - Ensure that sensitive data, such as API keys, are securely stored and not exposed in the app.
 
 5. **Testing**
@@ -56,6 +64,9 @@ The Scenic Road app is designed to provide users with an interactive experience 
 - Add user preferences for filtering landmarks by type or distance.
 - Implement offline mode for map and landmark data.
 - Integrate social sharing features for users to share their experiences.
+  - The app register the following scheme: scenic.road, which allow the app to be opened from other apps:
+  - scenic.road://open?page=landmark&id=123
+- Add CarPlay and Android Auto support.
 
 ## Conclusion
 

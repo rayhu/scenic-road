@@ -1,17 +1,19 @@
 {
   "expo": {
-    "name": "scenic-road",
+    "name": "Scenic Road",
     "slug": "scenic-road",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "scenic.road",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "bundleIdentifier": "io.surfski.scenicroad",
       "supportsTablet": true
     },
     "android": {
+      "package": "io.surfski.scenicroad",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -36,6 +38,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ef8cf022-8666-414d-92d1-1524441bd784"
+      }
     }
   }
 }

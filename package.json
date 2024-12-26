@@ -14,20 +14,21 @@
     "web": "expo start --web",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "lint:staged": "npx lint-staged"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
-    "@react-native-async-storage/async-storage": "^2.1.0",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/cli": "latest",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/stack": "^7.1.0",
     "axios": "^1.7.9",
-    "expo": "~52.0.18",
+    "expo": "~52.0.20",
     "expo-av": "~15.0.1",
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
@@ -35,7 +36,7 @@
     "expo-haptics": "~14.0.0",
     "expo-linking": "~7.0.3",
     "expo-location": "^18.0.4",
-    "expo-router": "4.0.11",
+    "expo-router": "~4.0.14",
     "expo-secure-store": "^14.0.0",
     "expo-speech": "~13.0.0",
     "expo-splash-screen": "~0.29.18",
@@ -71,6 +72,10 @@
     "prettier": "^3.4.2",
     "react-test-renderer": "18.3.1",
     "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "package.json": "node scripts/check-node-modules.js",
+    "*.{js,jsx,ts,tsx}": "eslint --fix"
   },
   "private": true
 }
