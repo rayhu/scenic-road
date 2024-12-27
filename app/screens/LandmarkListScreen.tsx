@@ -8,16 +8,10 @@ import {
   View,
 } from "react-native";
 
+import { Landmark } from "../types/landmark";
 import log from "../utils/logger";
 
 // Import the logger
-
-interface Landmark {
-  name: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-}
 
 interface LandmarkListScreenProps {
   landmarks: Landmark[];
@@ -39,7 +33,7 @@ const LandmarkListScreen: React.FC<LandmarkListScreenProps> = ({
     <View style={styles.container}>
       <FlatList
         data={landmarks}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.key}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.landmarkItem}

@@ -1,4 +1,5 @@
 import { LocationObject } from "expo-location";
+import { v4 as uuidv4 } from "uuid";
 
 import { PROVIDERS } from "../config/providers";
 import { fetchLandmarks as fetchAnthropicLandmarks } from "../services/anthropicService";
@@ -7,22 +8,8 @@ import {
   fetchLandmarks as fetchOpenAILandmarks,
   fetchStory,
 } from "../services/openaiService";
+import { Landmark, rawLandmark } from "../types/landmark";
 import log from "../utils/logger";
-
-interface Landmark {
-  name: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  story?: string;
-}
-
-interface LandmarksData {
-  lastRetrieved: Date | null;
-  landmarks: Landmark[];
-  provider: string;
-  location: LocationObject | null;
-}
 
 export const getLandmarks = async (
   selectedProvider: string,
@@ -51,20 +38,27 @@ export const getLandmarks = async (
   const latitude = location.coords.latitude;
   const longitude = location.coords.longitude;
 
-  let landmarksList: Landmark[] = [];
+  let rawLandmarksList: rawLandmark[] = [];
   switch (selectedProvider) {
     case PROVIDERS.OPENAI:
-      landmarksList = await fetchOpenAILandmarks(latitude, longitude);
+      rawLandmarksList = await fetchOpenAILandmarks(latitude, longitude);
       break;
     case PROVIDERS.ANTHROPIC:
-      landmarksList = await fetchAnthropicLandmarks(latitude, longitude);
+      rawLandmarksList = await fetchAnthropicLandmarks(latitude, longitude);
       break;
     case PROVIDERS.GOOGLE:
-      landmarksList = await fetchGoogleLandmarks(latitude, longitude);
+      rawLandmarksList = await fetchGoogleLandmarks(latitude, longitude);
       break;
     default:
       log.warn("Unknown provider");
   }
+
+  const landmarksList: Landmark[] = rawLandmarksList.map(
+    (landmark: rawLandmark) => ({
+      ...landmark,
+      key: uuidv4(), // Assign a UUID
+    }),
+  );
 
   // Fetch stories for each landmark
   for (let landmark of landmarksList) {
